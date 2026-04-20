@@ -7,7 +7,8 @@ use Mlk\Tgbotapi\Helper;
 
 $request = Context::getCurrent()->getRequest();
 $apiKey = $request->getQuery('key');
-$promoId = $request->getQuery('promoid');
+$promoId = $request->getQuery('promoid');       // одиночный параметр
+$promoIds = $request->getQuery('promoids');    // может быть массивом или строкой
 
 $moduleId = 'mlk.tgbotapi';
 
@@ -24,24 +25,31 @@ if (empty($apiKey) || $apiKey !== $validKey) {
     die();
 }
 
-if (empty($promoId)) {
+// Подготавливаем список ID для поиска
+$searchIds = [];
+if (!empty($promoIds)) {
+    if (is_array($promoIds)) {
+        $searchIds = $promoIds;
+    } elseif (is_string($promoIds)) {
+        // поддержка строки с разделителями (запятая, пробел)
+        $searchIds = preg_split('/[\s,]+/', $promoIds, -1, PREG_SPLIT_NO_EMPTY);
+    }
+} elseif (!empty($promoId)) {
+    $searchIds = [$promoId];
+}
+
+if (empty($searchIds)) {
     http_response_code(400);
-    echo json_encode(['error' => 'promoid parameter is required']);
+    echo json_encode(['error' => 'No promoid(s) provided']);
     die();
 }
 
 try {
     $helper = new Helper();
-    $promoData = $helper->getPromoByCode($promoId);
-    if ($promoData === null) {
-        http_response_code(404);
-        echo json_encode(['error' => 'Promo not found']);
-    } else {
-        header('Content-Type: application/json');
-        echo json_encode($promoData);
-    }
+    $result = $helper->getPromosByCodes($searchIds);
+    header('Content-Type: application/json');
+    echo json_encode($result);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(['error' => $e->getMessage()]);
 }
-?>

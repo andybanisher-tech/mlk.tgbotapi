@@ -29,6 +29,7 @@ $MESS['MLK_TGBOTAPI_FIELD_LINK'] = 'Поле для ссылки';
 $MESS['MLK_TGBOTAPI_LINK_TEMPLATE'] = 'Шаблон ссылки';
 $MESS['MLK_TGBOTAPI_LINK_TEMPLATE_HINT'] = 'Используйте {value} для подстановки значения из поля. Пример: https://stalker-co.ru/stock/{value}/';
 $MESS['MLK_TGBOTAPI_LINK_PREVIEW'] = 'Пример ссылки:';
+$MESS['MLK_TGBOTAPI_FIELD_PROMO_CODE_HINT'] = 'Выберите поле, которое будет использоваться для поиска по внешнему коду (promoid).';
 
 $MESS['MLK_TGBOTAPI_API_KEY'] = 'Текущий API ключ';
 $MESS['MLK_TGBOTAPI_GENERATE_KEY'] = 'Сгенерировать новый ключ';

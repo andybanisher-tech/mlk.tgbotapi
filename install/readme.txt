@@ -49,3 +49,20 @@ URL: https://вашсайт.ru/bitrix/tools/mlk_tgbotapi_banner.php?key=КЛЮЧ
     }
   ]
 }
+
+Получение промо по одному или нескольким внешним кодам:
+   - Один код:   /bitrix/tools/mlk_tgbotapi_promo.php?key=КЛЮЧ&promoid=CODE1
+   - Несколько:  /bitrix/tools/mlk_tgbotapi_promo.php?key=КЛЮЧ&promoids[]=CODE1&promoids[]=CODE2
+   - Строкой:    /bitrix/tools/mlk_tgbotapi_promo.php?key=КЛЮЧ&promoids=CODE1,CODE2
+
+Ответ (всегда массив, даже для одного):
+[
+  {
+    "id": 123,
+    "iblock_id": 1,
+    "name": "Акция 1",
+    "image": "https://...",
+    "link": "https://..."
+  },
+  ...
+]
