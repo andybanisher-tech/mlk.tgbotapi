@@ -299,20 +299,12 @@ class Helper
     }
 
     // ========== ПРОМО (акции) ==========
-    /**
-     * Получение данных одного промо по внешнему коду (обратная совместимость)
-     */
     public function getPromoByCode($promoId)
     {
         $result = $this->getPromosByCodes([$promoId]);
         return !empty($result) ? $result[0] : null;
     }
 
-    /**
-     * Получение данных нескольких промо по массиву внешних кодов
-     * @param array $promoIds
-     * @return array
-     */
     public function getPromosByCodes(array $promoIds)
     {
         if (empty($promoIds) || empty($this->settings['iblocks'])) {
@@ -337,6 +329,7 @@ class Helper
                 $fieldImage = $iblockSettings['field_image'] ?? 'DETAIL_PICTURE';
                 $fieldLink = $iblockSettings['field_link'] ?? '';
                 $linkTemplate = $iblockSettings['link_template'] ?? '';
+                $idField = $iblockSettings['field_id_for_promo'] ?? '';
 
                 $filter = [
                     'IBLOCK_ID' => $iblockId,
@@ -355,6 +348,9 @@ class Helper
                 if (!empty($fieldLink)) {
                     $select[] = $fieldLink;
                 }
+                if (!empty($idField)) {
+                    $select[] = $idField;
+                }
 
                 $rsElement = CIBlockElement::GetList([], $filter, false, false, $select);
                 if ($element = $rsElement->GetNext()) {
@@ -368,8 +364,17 @@ class Helper
                         }
                     }
 
+                    // Определяем id
+                    $idValue = null;
+                    if (!empty($idField)) {
+                        $idValue = $this->extractFieldValue($element, $idField);
+                    }
+                    if ($idValue === null || $idValue === '') {
+                        $idValue = $element['ID'];
+                    }
+
                     $found = [
-                        'id' => $element['ID'],
+                        'id' => $idValue,
                         'iblock_id' => $element['IBLOCK_ID'],
                         'name' => $this->extractFieldValue($element, $fieldName),
                         'image' => $this->extractImageValue($element, $fieldImage),

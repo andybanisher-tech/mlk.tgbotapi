@@ -25,7 +25,7 @@ if (!isset($_SESSION[$sessionKey]) || !is_array($_SESSION[$sessionKey])) {
 $savedSettings = json_decode(Option::get($module_id, 'settings', '{}'), true);
 if (!is_array($savedSettings)) {
     $savedSettings = [
-        'hl' => ['id' => 0, 'code_field' => '', 'name_field' => '', 'group_field' => '', 'group_separator' => ','],
+        'hl' => ['id' => 0, 'code_field' => '', 'name_field' => '', 'group_field' => '', 'bonus_field' => '', 'group_separator' => ','],
         'iblocks' => []
     ];
 }
@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && check_bitrix_sessid()) {
                 'code_field' => $_POST['hl_code_field'],
                 'name_field' => $_POST['hl_name_field'],
                 'group_field' => $_POST['hl_group_field'],
+                'bonus_field' => $_POST['hl_bonus_field'],
                 'group_separator' => $_POST['hl_group_separator'],
             ],
             'iblocks' => []
@@ -53,17 +54,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && check_bitrix_sessid()) {
         if (is_array($iblockIds)) {
             foreach ($iblockIds as $index => $iblockId) {
                 if (empty($iblockId)) continue;
-            $newData['iblocks'][] = [
-                'iblock_id' => (int)$iblockId,
-                'property_group_id' => (int)$_POST['property_group_id'][$index],
-                'field_name' => $_POST['field_name'][$index],
-                'field_description' => $_POST['field_description'][$index],
-                'field_image' => $_POST['field_image'][$index],
-                'field_link' => $_POST['field_link'][$index],
-                'link_template' => $_POST['link_template'][$index],
-                'field_promo_code' => $_POST['field_promo_code'][$index],
-            ];
-        }
+                $newData['iblocks'][] = [
+                    'iblock_id' => (int)$iblockId,
+                    'property_group_id' => (int)$_POST['property_group_id'][$index],
+                    'field_name' => $_POST['field_name'][$index],
+                    'field_description' => $_POST['field_description'][$index],
+                    'field_image' => $_POST['field_image'][$index],
+                    'field_link' => $_POST['field_link'][$index],
+                    'link_template' => $_POST['link_template'][$index],
+                    'field_promo_code' => $_POST['field_promo_code'][$index],
+                    'field_id_for_promo' => $_POST['field_id_for_promo'][$index],
+                ];
+            }
         }
 
         Option::set($module_id, 'settings', json_encode($newData));
@@ -85,6 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && check_bitrix_sessid()) {
             'field_image' => '',
             'field_link' => '',
             'link_template' => 'https://stalker-co.ru/stock/{value}/',
+            'field_promo_code' => '',
+            'field_id_for_promo' => '',
         ];
         $needSaveToSession = true;
     }
@@ -100,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && check_bitrix_sessid()) {
         $currentData['hl']['code_field'] = $_POST['hl_code_field'];
         $currentData['hl']['name_field'] = $_POST['hl_name_field'];
         $currentData['hl']['group_field'] = $_POST['hl_group_field'];
+        $currentData['hl']['bonus_field'] = $_POST['hl_bonus_field'];
         $currentData['hl']['group_separator'] = $_POST['hl_group_separator'];
         $needSaveToSession = true;
     }
@@ -217,6 +222,19 @@ $APPLICATION->SetTitle(Loc::getMessage('MLK_TGBOTAPI_TAB_HL_TITLE'));
         </td>
     </tr>
     <tr>
+        <td><?= Loc::getMessage('MLK_TGBOTAPI_HL_BONUS_FIELD') ?>:</td>
+        <td>
+            <select name="hl_bonus_field">
+                <option value=""><?= Loc::getMessage('MLK_TGBOTAPI_SELECT_FIELD') ?></option>
+                <?php foreach ($hlFields as $fieldCode => $fieldName): ?>
+                    <option value="<?= htmlspecialcharsbx($fieldCode) ?>" <?= ($currentData['hl']['bonus_field'] == $fieldCode) ? 'selected' : '' ?>>
+                        <?= htmlspecialcharsbx($fieldName) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </td>
+    </tr>
+    <tr>
         <td><?= Loc::getMessage('MLK_TGBOTAPI_HL_GROUP_SEPARATOR') ?>:</td>
         <td>
             <input type="text" name="hl_group_separator" value="<?= htmlspecialcharsbx($currentData['hl']['group_separator']) ?>" size="10">
@@ -254,7 +272,7 @@ $APPLICATION->SetTitle(Loc::getMessage('MLK_TGBOTAPI_TAB_HL_TITLE'));
             <?= Loc::getMessage('MLK_TGBOTAPI_API_URL') ?>: <br>
             <code><?= 'https://' . $_SERVER['HTTP_HOST'] . '/bitrix/tools/' . $module_id . '_banner.php?key=' . urlencode($apiKey) . '&code={CODE}' ?></code>
         </td>
-    </tr>
+    </table>
 
     <? $tabControl->Buttons(); ?>
     <input type="submit" name="save" value="<?= Loc::getMessage('MAIN_SAVE') ?>" class="adm-btn-save">

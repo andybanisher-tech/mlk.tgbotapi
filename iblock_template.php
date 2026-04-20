@@ -154,7 +154,6 @@ $iblock = isset($iblock) ? $iblock : [];
                     <option value=""><?= Loc::getMessage('MLK_TGBOTAPI_SELECT_FIELD') ?></option>
                     <?php if (($iblock['iblock_id'] ?? 0) > 0): ?>
                         <?php
-                        // Стандартные поля, которые могут быть использованы как внешний код
                         $standardFields = [
                             'ID' => 'ID',
                             'NAME' => 'Название',
@@ -176,7 +175,6 @@ $iblock = isset($iblock) ? $iblock : [];
                         <option value="<?= $code ?>" <?= $selected ?>><?= '[' . $code . '] ' . $name ?></option>
                         <?php endforeach; ?>
                         <?php
-                        // Пользовательские свойства
                         $props = CIBlockProperty::GetList(['SORT' => 'ASC'], ['IBLOCK_ID' => $iblock['iblock_id'], 'ACTIVE' => 'Y']);
                         while ($prop = $props->Fetch()):
                             $selected = (($iblock['field_promo_code'] ?? '') == 'PROPERTY_' . $prop['CODE']) ? 'selected' : '';
@@ -186,6 +184,43 @@ $iblock = isset($iblock) ? $iblock : [];
                     <?php endif; ?>
                 </select>
                 <br><small><?= Loc::getMessage('MLK_TGBOTAPI_FIELD_PROMO_CODE_HINT') ?></small>
+            </td>
+        </tr>
+
+        <!-- Поле для идентификатора в ответе API промо -->
+        <tr>
+            <td><?= Loc::getMessage('MLK_TGBOTAPI_FIELD_ID_FOR_PROMO') ?>:</td>
+            <td>
+                <select name="field_id_for_promo[<?= $index ?>]" id="field_id_for_promo_<?= $index ?>">
+                    <option value=""><?= Loc::getMessage('MLK_TGBOTAPI_SELECT_FIELD') ?> (ID элемента)</option>
+                    <?php if (($iblock['iblock_id'] ?? 0) > 0): ?>
+                        <?php
+                        $standardFields = [
+                            'ID' => 'ID (внутренний)',
+                            'CODE' => 'Символьный код',
+                            'XML_ID' => 'Внешний код',
+                            'NAME' => 'Название',
+                            'PREVIEW_TEXT' => 'Текст анонса',
+                            'DETAIL_TEXT' => 'Детальный текст',
+                            'SORT' => 'Сортировка',
+                            'ACTIVE_FROM' => 'Дата начала',
+                            'ACTIVE_TO' => 'Дата окончания',
+                        ];
+                        foreach ($standardFields as $code => $name):
+                            $selected = (($iblock['field_id_for_promo'] ?? '') == $code) ? 'selected' : '';
+                        ?>
+                        <option value="<?= $code ?>" <?= $selected ?>><?= '[' . $code . '] ' . $name ?></option>
+                        <?php endforeach; ?>
+                        <?php
+                        $props = CIBlockProperty::GetList(['SORT' => 'ASC'], ['IBLOCK_ID' => $iblock['iblock_id'], 'ACTIVE' => 'Y']);
+                        while ($prop = $props->Fetch()):
+                            $selected = (($iblock['field_id_for_promo'] ?? '') == 'PROPERTY_' . $prop['CODE']) ? 'selected' : '';
+                        ?>
+                        <option value="PROPERTY_<?= $prop['CODE'] ?>" <?= $selected ?>><?= '[' . $prop['CODE'] . '] ' . $prop['NAME'] ?></option>
+                        <?php endwhile; ?>
+                    <?php endif; ?>
+                </select>
+                <br><small><?= Loc::getMessage('MLK_TGBOTAPI_FIELD_ID_FOR_PROMO_HINT') ?></small>
             </td>
         </tr>
     </table>
