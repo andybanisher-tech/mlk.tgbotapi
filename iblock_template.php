@@ -162,8 +162,8 @@ $iblock = isset($iblock) ? $iblock : [];
                             'PREVIEW_TEXT' => 'Текст анонса',
                             'DETAIL_TEXT' => 'Детальный текст',
                             'SORT' => 'Сортировка',
-                            'ACTIVE_FROM' => 'Дата начала активности',
-                            'ACTIVE_TO' => 'Дата окончания активности',
+                            'ACTIVE_FROM' => 'Дата начала',
+                            'ACTIVE_TO' => 'Дата окончания',
                             'CREATED_BY' => 'Кем создан',
                             'MODIFIED_BY' => 'Кем изменен',
                             'DATE_CREATE' => 'Дата создания',
@@ -179,7 +179,7 @@ $iblock = isset($iblock) ? $iblock : [];
                         while ($prop = $props->Fetch()):
                             $selected = (($iblock['field_promo_code'] ?? '') == 'PROPERTY_' . $prop['CODE']) ? 'selected' : '';
                         ?>
-                        <option value="PROPERTY_<?= $prop['CODE'] ?>" <?= $selected ?>><?= '[' . $prop['CODE'] . '] ' . $prop['NAME'] . ($prop['PROPERTY_TYPE'] == 'S' ? '' : ' (' . $prop['PROPERTY_TYPE'] . ')') ?></option>
+                        <option value="PROPERTY_<?= $prop['CODE'] ?>" <?= $selected ?>><?= '[' . $prop['CODE'] . '] ' . $prop['NAME'] ?></option>
                         <?php endwhile; ?>
                     <?php endif; ?>
                 </select>
@@ -187,7 +187,7 @@ $iblock = isset($iblock) ? $iblock : [];
             </td>
         </tr>
 
-        <!-- Поле для идентификатора в ответе API промо -->
+        <!-- Поле для идентификатора (id) в ответе API -->
         <tr>
             <td><?= Loc::getMessage('MLK_TGBOTAPI_FIELD_ID_FOR_PROMO') ?>:</td>
             <td>

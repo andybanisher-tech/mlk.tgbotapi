@@ -168,7 +168,7 @@ $APPLICATION->SetTitle(Loc::getMessage('MLK_TGBOTAPI_TAB_HL_TITLE'));
     <? $tabControl->Begin(); ?>
 
     <? $tabControl->BeginNextTab(); ?>
-    <tr>
+    <table>
         <td width="40%"><?= Loc::getMessage('MLK_TGBOTAPI_HL_ID') ?>:</td>
         <td width="60%">
             <select name="hl_id" id="hl_id" onchange="this.form.change_hl.value='1'; this.form.submit()">
@@ -272,7 +272,7 @@ $APPLICATION->SetTitle(Loc::getMessage('MLK_TGBOTAPI_TAB_HL_TITLE'));
             <?= Loc::getMessage('MLK_TGBOTAPI_API_URL') ?>: <br>
             <code><?= 'https://' . $_SERVER['HTTP_HOST'] . '/bitrix/tools/' . $module_id . '_banner.php?key=' . urlencode($apiKey) . '&code={CODE}' ?></code>
         </td>
-    </table>
+    </tr>
 
     <? $tabControl->Buttons(); ?>
     <input type="submit" name="save" value="<?= Loc::getMessage('MAIN_SAVE') ?>" class="adm-btn-save">
